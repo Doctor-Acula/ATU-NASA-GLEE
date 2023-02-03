@@ -6,7 +6,7 @@
 MPU6000 accelerometer(1, false);
 
 //Variable Definitions
-float acc; //3 axis acceleration reading in Gs
+sensor_float_vec_t acc; // Saves acceleration readings in a vector structure
 
 void setup() {
 // Begin Serial Communications (LunaSAT Baud Rate Set to 9600)
