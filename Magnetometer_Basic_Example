@@ -1,0 +1,39 @@
+#include <MLX90395.h>
+
+MLX90395 magnetometer = MLX90395(1, false);
+
+mlx_sample_t sample;
+
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  if(!magnetometer.begin_I2C())
+  {
+    Serial.println("You messed up, lul");
+    while (1) { delay(10);}
+  }
+  magnetometer.setGain(8);
+  magnetometer.setResolution(MLX90395_RES_17,MLX90395_RES_17,MLX90395_RES_17);
+  
+  magnetometer.setOSR(MLX90395_OSR_4);
+  magnetometer.setFilter(MLX90395_FILTER_8);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  // take a sample 
+  sample = magnetometer.getSample();
+
+  float strength = sqrt(pow(sample.magnetic.x, 2) + pow(sample.magnetic.y, 2) + pow(sample.magnetic.z, 2));
+  // atan2 takes the arctan of the y and x components of the magentic field. 180/3.14 is used to convert this angle to degrees
+  float angle = atan2(sample.magnetic.y, sample.magnetic.x)*(180/3.14);
+  // print the magnetic field results
+  Serial.println(sample.magnetic.x, 4); Serial.print(", \t");
+  Serial.println(sample.magnetic.y, 4); Serial.print(", \t");
+  Serial.println(sample.magnetic.z, 4); Serial.print(", \t");
+  Serial.println(strength, 4); Serial.print(", \t");
+  Serial.println(angle, 4); Serial.println("");
+
+  delay(100); // Take samples approximately 100Hz
+}
